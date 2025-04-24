@@ -5,7 +5,7 @@ blueprint:
   input:
     switch:
       name: Switch
-      description: Inovelli Switch.
+      description: List of available Inovelli VZM31-SN switches.
       selector:
         device:
           integration: mqtt
