@@ -8,9 +8,7 @@ blueprint:
       description: "List of available inovelli VZW31-SN dimmers."
       selector:
           device:
-            integration: zwave_js
             manufacturer: Inovelli
-            model: VZW31-SN
     ## Config Press 1 time
     config_button:
       name: Button C - Config press
