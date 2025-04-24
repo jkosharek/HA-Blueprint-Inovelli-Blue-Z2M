@@ -1,0 +1,124 @@
+blueprint:
+  name: Inovelli Blue - Z2M
+  description: 'Home Assistant Blueprint for Inovelli Red Switches Running in Z2M'
+  domain: automation
+  input:
+    inovelli_switch:
+      name: Inovelli Dimmer
+      description: "List of available inovelli VZW31-SN dimmers."
+      selector:
+          device:
+            integration: zwave_js
+            manufacturer: Inovelli
+            model: VZW31-SN
+    ## Config Press 1 time
+    config_button:
+      name: Button C - Config press
+      description: "Action to run, when the config button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    ## Paddle Press 1 time
+    button_a:
+      name: Button A - Up/On press
+      description: "Action to run, when the button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    button_b:
+      name: Button B - Down/Off press
+      description: "Action to run, when the button is pressed one time."
+      default: []
+      selector:
+        action: {}
+    ## Paddle Press 2 times
+    button_a2:
+      name: Button A - Up/On press 2x
+      description: "Action to run, when the button is pressed two times."
+      default: []
+      selector:
+        action: {}
+    button_b2:
+      name: Button B - Down/Off press 2x
+      description: "Action to run, when the button is pressed two times."
+      default: []
+      selector:
+        action: {}
+    ## Aux Config Press 1 time
+    config_button_aux:
+      name: Aux Button C - Config press
+      description: "Action to run, when the config button on the aux switch is pressed one time."
+      default: []
+      selector:
+        action: {}
+    ## Aux Paddle Press 1 time
+    button_a_aux:
+      name: Aux Button A - Up/On press
+      description: "Action to run, when the button on the aux switch is pressed one time."
+      default: []
+      selector:
+        action: {}
+    button_b_aux:
+      name: Aux Button B - Down/Off press
+      description: "Action to run, when the button on the aux switch is pressed one time."
+      default: []
+      selector:
+        action: {}
+    ## Aux Paddle Press 2 time
+    button_a_aux2:
+      name: Aux Button A - Up/On press 2x
+      description: "Action to run, when the button on the aux switch is pressed two times."
+      default: []
+      selector:
+        action: {}
+    button_b_aux2:
+      name: Aux Button B - Down/Off press 2x
+      description: "Action to run, when the button on the aux switch is pressed two times."
+      default: []
+      selector:
+        action: {}
+mode: single
+max_exceeded: silent
+variables:
+  device_id: !input inovelli_switch
+trigger:
+  - platform: event
+    event_type: zwave_js_value_notification
+condition: "{{ trigger.event.data.device_id == device_id }}"
+action:
+  - variables:
+      button_id: "{{ trigger.event.data.property_key_name }}"
+      press_count: "{{ trigger.event.data.value }}"
+  - service: "logbook.log"
+    data:
+      name: "Button Id"
+      message: "{{ button_id }}"
+  - service: "logbook.log"
+    data:
+      name: "Press Count"
+      message: "{{ press_count }}"
+  - service: "logbook.log"
+    data:
+      name: "Device"
+      message: "{{ zwave_device }}"
+  - choose:
+    - conditions: '{{ button_id == "003" and press_count == "KeyPressed" }}'
+      sequence: !input config_button
+    - conditions: '{{ button_id == "002" and press_count == "KeyPressed" }}'
+      sequence: !input button_a
+    - conditions: '{{ button_id == "001" and press_count == "KeyPressed" }}'
+      sequence: !input button_b
+    - conditions: '{{ button_id == "002" and press_count == "KeyPressed2x" }}'
+      sequence: !input button_a2
+    - conditions: '{{ button_id == "001" and press_count == "KeyPressed2x" }}'
+      sequence: !input button_b2
+    - conditions: '{{ button_id == "006" and press_count == 0 }}'
+      sequence: !input config_button_aux
+    - conditions: '{{ button_id == "005" and press_count == 0 }}'
+      sequence: !input button_a_aux
+    - conditions: '{{ button_id == "004" and press_count == 0 }}'
+      sequence: !input button_b_aux
+    - conditions: '{{ button_id == "005" and press_count == 3 }}'
+      sequence: !input button_a_aux2
+    - conditions: '{{ button_id == "004" and press_count == 3 }}'
+      sequence: !input button_b_aux2
