@@ -10,7 +10,6 @@ blueprint:
         device:
           integration: mqtt
           manufacturer: Inovelli
-          model: VZM31-SN
           multiple: false
     config_held:
       name: Hold Config
