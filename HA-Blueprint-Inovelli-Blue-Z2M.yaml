@@ -145,7 +145,7 @@ blueprint:
       default: []
       selector:
         action: {}
-  source_url: https://github.com/jkosharek/HA-Blueprint-Inovelli-Blue-Z2M-Test/blob/main/HA-Blueprint-Inovelli-Blue-Z2M.yaml
+  source_url: https://github.com/jkosharek/HA-Blueprint-Inovelli-Blue-Z2M/blob/main/HA-Blueprint-Inovelli-Blue-Z2M.yaml
 mode: single
 max_exceeded: silent
 variables:
